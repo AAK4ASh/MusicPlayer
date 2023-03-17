@@ -1,33 +1,41 @@
 package com.main.musicplayer
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.recycler_list.view.*
+import com.main.musicplayer.databinding.RecyclerListBinding
 
-class MusicAdapter (private var musics: MutableList<Music>):// new var and inside it list of music(data class)
+class MusicAdapter (private val musics: MutableList<Music>):// new var and inside it list of music(data class)
     RecyclerView.Adapter<MusicAdapter.MusicViewHolder>() {
 
-    class MusicViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+        inner class MusicViewHolder(private val binding: RecyclerListBinding):RecyclerView.ViewHolder(binding.root){
+            val image= binding.imageView
+        val musicName=binding.textView
+        val playmusic = binding.playButton}
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicViewHolder {//when needed provide a view holder
-        return MusicViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate( //inflating the viewholder from the recyler list
-                    R.layout.recycler_list,
-                    parent,
-                    false
-                )
-        )
+
+           val binding=RecyclerListBinding.inflate( LayoutInflater.from(parent.context),parent,false)
+        return MusicViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MusicViewHolder, position: Int) {
         val currentMusic = musics.get(position)
-        holder.itemView.textView.text = currentMusic.music
+        holder.apply {
+            musicName.text =currentMusic.musicName
+        }
 
     }
 
     override fun getItemCount(): Int {
         return musics.size
     }
+
+    fun add(music: Music) {
+        musics.add(music)
+        notifyItemInserted(-1)
+    }
+
+
 }

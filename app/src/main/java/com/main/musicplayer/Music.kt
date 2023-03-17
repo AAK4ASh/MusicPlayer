@@ -1,3 +1,5 @@
 package com.main.musicplayer
 
-data class Music(val image: Int , val music: String)
+import java.security.cert.CertPath
+
+data class Music(val musicName: String)
