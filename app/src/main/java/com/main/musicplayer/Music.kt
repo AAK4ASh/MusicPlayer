@@ -1,5 +1,3 @@
 package com.main.musicplayer
 
-import java.security.cert.CertPath
-
-data class Music(val musicName: String)
+data class Music(val id: String, val musicName: String, val path: String)

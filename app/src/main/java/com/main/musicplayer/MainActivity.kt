@@ -2,15 +2,13 @@ package com.main.musicplayer
 
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.main.musicplayer.databinding.ActivityMainBinding
+import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,37 +19,27 @@ class MainActivity : AppCompatActivity() {
         requestPermission()
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
-        setContentView(view)
-        initUI()
-
-
+        getAllAudios()
     }
-
-    private fun initUI() {
-        showAudioFiles()
-
-
-    }
-
     @SuppressLint("Range")
-    private fun showAudioFiles() {
-        val externalUri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0 AND " + MediaStore.Audio.Media.DATA + " LIKE '%.mp3'"
-        val projection = arrayOf(MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE)
-        val cursor = contentResolver.query(externalUri, projection, selection, null, null)
-        val mp3List = mutableListOf<Music>()
-        cursor?.use {
-            while (it.moveToNext()) {
-                val title = it.getString(it.getColumnIndex(MediaStore.Audio.Media.TITLE))
-                mp3List.add(musics(title))
-                val recyclerView: RecyclerView =binding.textView
-                recyclerView.layoutManager = LinearLayoutManager(this)
-                val adapter = musicAdapter(mp3List)
-                recyclerView.adapter = adapter
-
-            }
-        }
-
+    private fun getAllAudios():MutableList<Music>{
+        val tempList= mutableListOf<Music>()
+        val selection =  MediaStore.Audio.Media.IS_MUSIC+ "!=0"
+        val projection = arrayOf(MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.DATA)
+        val cursor= this.contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,projection,selection,null,null)
+if (cursor!=null){
+    if (cursor.moveToFirst())
+        do {
+val  title= cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
+            val idC =cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))
+            val music= Music(id = idC, musicName = title, path = String())
+            val file= File(music.path)
+            if (file.exists())
+                tempList.add(music)
+        }while (cursor.moveToNext())
+        cursor.close()
+}
+        return tempList
     }
 
     private fun requestPermission() {

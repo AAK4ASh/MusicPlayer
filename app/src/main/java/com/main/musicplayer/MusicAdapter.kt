@@ -23,7 +23,7 @@ class MusicAdapter (private val musics: MutableList<Music>):// new var and insid
     override fun onBindViewHolder(holder: MusicViewHolder, position: Int) {
         val currentMusic = musics.get(position)
         holder.apply {
-            musicName.text =currentMusic.musicName
+            musicName.text =musics[position].musicName
         }
 
     }
