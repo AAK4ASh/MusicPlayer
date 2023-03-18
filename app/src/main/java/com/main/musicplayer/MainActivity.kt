@@ -19,28 +19,12 @@ class MainActivity : AppCompatActivity() {
         requestPermission()
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
-        getAllAudios()
     }
-    @SuppressLint("Range")
-    private fun getAllAudios():MutableList<Music>{
-        val tempList= mutableListOf<Music>()
-        val selection =  MediaStore.Audio.Media.IS_MUSIC+ "!=0"
-        val projection = arrayOf(MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.DATA)
-        val cursor= this.contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,projection,selection,null,null)
-if (cursor!=null){
-    if (cursor.moveToFirst())
-        do {
-val  title= cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
-            val idC =cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))
-            val music= Music(id = idC, musicName = title, path = String())
-            val file= File(music.path)
-            if (file.exists())
-                tempList.add(music)
-        }while (cursor.moveToNext())
-        cursor.close()
-}
-        return tempList
-    }
+    mp3RecyclerView = findViewById(R.id.mp3RecyclerView)
+    mp3RecyclerView.layoutManager = LinearLayoutManager(this)
+    val mp3Files = getMp3Files(this)
+    val mp3Adapter = Mp3Adapter(mp3Files)
+    mp3RecyclerView.adapter = mp3Adapter
 
     private fun requestPermission() {
         if (ActivityCompat.checkSelfPermission(

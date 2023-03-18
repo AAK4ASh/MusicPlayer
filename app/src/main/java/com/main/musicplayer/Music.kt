@@ -1,3 +1,3 @@
 package com.main.musicplayer
 
-data class Music(val id: String, val musicName: String, val path: String)
+data class Music( val name: String, val path: String)
